@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Connections & Cabling Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .connection-diagram {
+            width: 100%;
+            height: 1400px;
+            border: 3px solid #34495e;
+            border-radius: 10px;
+            position: relative;
+            background: #f8f9fa;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Network Sites */
+        .site {
+            position: absolute;
+            border: 3px solid;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .kandy-site {
+            top: 80px;
+            left: 50px;
+            width: 700px;
+            height: 1200px;
+            border-color: #3498db;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(255,255,255,0.95));
+        }
+
+        .galle-site {
+            top: 80px;
+            right: 50px;
+            width: 700px;
+            height: 1200px;
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(255,255,255,0.95));
+        }
+
+        .site-title {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .kandy-site .site-title {
+            background: #3498db;
+        }
+
+        .galle-site .site-title {
+            background: #e74c3c;
+        }
+
+        /* Network Devices */
+        .device {
+            position: absolute;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 9px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .device:hover {
+            transform: scale(1.1);
+        }
+
+        .internet {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 60px;
+            background: radial-gradient(circle, #3498db, #2980b9);
+            border-radius: 15px;
+            font-size: 12px;
+            border: 3px solid #fff;
+        }
+
+        .router { background: linear-gradient(45deg, #8e44ad, #9b59b6); width: 60px; height: 40px; }
+        .firewall { background: linear-gradient(45deg, #e74c3c, #c0392b); width: 60px; height: 40px; }
+        .core-switch { background: linear-gradient(45deg, #27ae60, #2ecc71); width: 80px; height: 50px; }
+        .dist-switch { background: linear-gradient(45deg, #f39c12, #e67e22); width: 70px; height: 40px; }
+        .access-switch { background: linear-gradient(45deg, #95a5a6, #7f8c8d); width: 60px; height: 35px; }
+        .server { background: linear-gradient(45deg, #34495e, #2c3e50); width: 45px; height: 60px; }
+        .wifi-ap { background: linear-gradient(45deg, #16a085, #1abc9c); width: 35px; height: 35px; border-radius: 50%; }
+        .camera { background: linear-gradient(45deg, #8e44ad, #9b59b6); width: 25px; height: 25px; border-radius: 50%; }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            z-index: 5;
+            border-radius: 2px;
+        }
+
+        .fiber-connection {
+            background: #e74c3c;
+            height: 6px;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+
+        .ethernet-connection {
+            background: #3498db;
+            height: 3px;
+        }
+
+        .trunk-connection {
+            background: #f39c12;
+            height: 4px;
+        }
+
+        .access-connection {
+            background: #95a5a6;
+            height: 2px;
+        }
+
+        .wireless-connection {
+            background: #16a085;
+            height: 2px;
+            border: 1px dashed #1abc9c;
+        }
+
+        /* Port Labels */
+        .port-label {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 8px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        /* Connection Specifications */
+        .connection-spec {
+            position: absolute;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 8px;
+            font-weight: bold;
+            z-index: 15;
+            color: #2c3e50;
+        }
+
+        /* VLAN Groups */
+        .vlan-group {
+            position: absolute;
+            border: 2px dashed;
+            border-radius: 8px;
+            padding: 5px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .vlan-label {
+            position: absolute;
+            top: -12px;
+            left: 8px;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+            border: 1px solid;
+        }
+
+        /* Connection Tables */
+        .connection-table {
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .connection-table h3 {
+            background: #34495e;
+            color: white;
+            margin: 0;
+            padding: 15px;
+            font-size: 18px;
+        }
+
+        .table-content {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .cable-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            font-size: 10px;
+        }
+
+        .fiber { background: #e74c3c; }
+        .cat6 { background: #3498db; }
+        .cat6a { background: #27ae60; }
+        .wireless { background: #16a085; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Network Connections & Cabling Specification</h1>
+        
+        <!-- Main Connection Diagram -->
+        <div class="connection-diagram">
+            <!-- Internet -->
+            <div class="device internet">INTERNET</div>
+            
+            <!-- Main VPN Connection -->
+            <div class="connection-line fiber-connection" style="top: 65px; left: 200px; width: calc(100% - 400px);"></div>
+            <div class="connection-spec" style="top: 45px; left: 50%; transform: translateX(-50%);">Site-to-Site VPN<br>100Mbps Fiber</div>
+            
+            <!-- Kandy Head Office -->
+            <div class="site kandy-site">
+                <div class="site-title">KANDY HEAD OFFICE - DETAILED CONNECTIONS</div>
+                
+                <!-- Core Infrastructure -->
+                <div class="device router" style="top: 60px; left: 30px;" id="kandy-router">ISP Router</div>
+                <div class="device firewall" style="top: 60px; left: 120px;" id="kandy-fw">Firewall</div>
+                <div class="device core-switch" style="top: 140px; left: 70px;" id="kandy-core">Core SW<br>L3</div>
+                
+                <!-- Router to Firewall Connection -->
+                <div class="connection-line ethernet-connection" style="top: 80px; left: 90px; width: 30px;"></div>
+                <div class="port-label" style="top: 70px; left: 95px;">Gi0/0</div>
+                <div class="port-label" style="top: 70px; left: 125px;">Gi0/1</div>
+                
+                <!-- Firewall to Core Connection -->
+                <div class="connection-line trunk-connection" style="top: 100px; left: 150px; width: 2px; height: 40px; transform: rotate(0deg);"></div>
+                <div class="connection-line trunk-connection" style="top: 140px; left: 120px; width: 30px;"></div>
+                <div class="port-label" style="top: 110px; left: 155px;">Gi0/2</div>
+                <div class="port-label" style="top: 130px; left: 125px;">Gi0/1</div>
+                
+                <!-- Distribution Layer -->
+                <div class="device dist-switch" style="top: 220px; left: 20px;" id="kandy-dist1">Dist SW1<br>Floor 1</div>
+                <div class="device dist-switch" style="top: 220px; left: 120px;" id="kandy-dist2">Dist SW2<br>Floor 2</div>
+                <div class="device dist-switch" style="top: 220px; left: 220px;" id="kandy-dist3">Dist SW3<br>Floor 3</div>
+                
+                <!-- Core to Distribution Connections -->
+                <div class="connection-line trunk-connection" style="top: 190px; left: 110px; width: 2px; height: 30px;"></div>
+                <div class="connection-line trunk-connection" style="top: 220px; left: 50px; width: 60px;"></div>
+                <div class="connection-line trunk-connection" style="top: 220px; left: 110px; width: 60px;"></div>
+                <div class="connection-line trunk-connection" style="top: 220px; left: 170px; width: 60px;"></div>
+                
+                <!-- Floor 1 Access Layer -->
+                <div class="vlan-group" style="top: 300px; left: 10px; width: 300px; height: 200px; border-color: #3498db;">
+                    <div class="vlan-label" style="border-color: #3498db; color: #3498db;">FLOOR 1 - ACCESS LAYER</div>
+                    
+                    <div class="device access-switch" style="top: 30px; left: 20px;">Reception<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 100px;">Sales<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 180px;">Customer<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 60px;">Dev<br>SW</div>
+                    
+                    <div class="device wifi-ap" style="top: 130px; left: 30px;">AP1</div>
+                    <div class="device wifi-ap" style="top: 130px; left: 100px;">AP2</div>
+                    <div class="device wifi-ap" style="top: 130px; left: 170px;">AP3</div>
+                    
+                    <!-- Distribution to Access Connections -->
+                    <div class="connection-line access-connection" style="top: -40px; left: 50px; width: 2px; height: 70px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 50px; width: 50px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 130px; width: 50px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 90px; width: 2px; height: 50px;"></div>
+                </div>
+                
+                <!-- Floor 2 Access Layer -->
+                <div class="vlan-group" style="top: 520px; left: 10px; width: 300px; height: 200px; border-color: #f39c12;">
+                    <div class="vlan-label" style="border-color: #f39c12; color: #f39c12;">FLOOR 2 - ACCESS LAYER</div>
+                    
+                    <div class="device access-switch" style="top: 30px; left: 20px;">Director<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 100px;">Board<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 20px;">Admin<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 100px;">HR<br>SW</div>
+                    
+                    <div class="device wifi-ap" style="top: 130px; left: 30px;">AP4</div>
+                    <div class="device wifi-ap" style="top: 130px; left: 100px;">AP5</div>
+                    
+                    <!-- Distribution to Access Connections -->
+                    <div class="connection-line access-connection" style="top: -80px; left: 150px; width: 2px; height: 110px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 50px; width: 100px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 80px; left: 50px; width: 100px; height: 2px;"></div>
+                </div>
+                
+                <!-- Floor 3 Access Layer -->
+                <div class="vlan-group" style="top: 740px; left: 10px; width: 300px; height: 150px; border-color: #27ae60;">
+                    <div class="vlan-label" style="border-color: #27ae60; color: #27ae60;">FLOOR 3 - ACCESS LAYER</div>
+                    
+                    <div class="device access-switch" style="top: 30px; left: 50px;">Accounting<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 150px;">IT<br>SW</div>
+                    <div class="device wifi-ap" style="top: 80px; left: 100px;">AP6</div>
+                    
+                    <!-- Distribution to Access Connections -->
+                    <div class="connection-line access-connection" style="top: -120px; left: 250px; width: 2px; height: 150px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 80px; width: 120px; height: 2px;"></div>
+                </div>
+                
+                <!-- Server Room -->
+                <div class="vlan-group" style="top: 910px; left: 10px; width: 650px; height: 250px; border-color: #34495e;">
+                    <div class="vlan-label" style="border-color: #34495e; color: #34495e;">SERVER ROOM - 200.100.50.0/24</div>
+                    
+                    <div class="device server" style="top: 40px; left: 50px;">DC<br>Server</div>
+                    <div class="device server" style="top: 40px; left: 150px;">DHCP<br>Server</div>
+                    <div class="device server" style="top: 40px; left: 250px;">File<br>Server</div>
+                    <div class="device server" style="top: 40px; left: 350px;">App<br>Server</div>
+                    <div class="device server" style="top: 120px; left: 100px;">Backup<br>Server</div>
+                    <div class="device server" style="top: 120px; left: 200px;">NMS<br>Server</div>
+                    
+                    <!-- Server Switch -->
+                    <div class="device access-switch" style="top: 180px; left: 175px;">Server<br>SW</div>
+                    
+                    <!-- Server Connections -->
+                    <div class="connection-line access-connection" style="top: 100px; left: 75px; width: 2px; height: 80px;"></div>
+                    <div class="connection-line access-connection" style="top: 100px; left: 175px; width: 2px; height: 80px;"></div>
+                    <div class="connection-line access-connection" style="top: 100px; left: 275px; width: 2px; height: 80px;"></div>
+                    <div class="connection-line access-connection" style="top: 100px; left: 375px; width: 2px; height: 80px;"></div>
+                    <div class="connection-line access-connection" style="top: 180px; left: 125px; width: 2px; height: -60px;"></div>
+                    <div class="connection-line access-connection" style="top: 180px; left: 225px; width: 2px; height: -60px;"></div>
+                    
+                    <!-- Server Switch to Core -->
+                    <div class="connection-line trunk-connection" style="top: -700px; left: 200px; width: 2px; height: 700px;"></div>
+                </div>
+            </div>
+            
+            <!-- Galle Branch -->
+            <div class="site galle-site">
+                <div class="site-title">GALLE BRANCH - DETAILED CONNECTIONS</div>
+                
+                <!-- Core Infrastructure -->
+                <div class="device router" style="top: 60px; left: 30px;">ISP Router</div>
+                <div class="device firewall" style="top: 60px; left: 120px;">Firewall</div>
+                <div class="device core-switch" style="top: 140px; left: 70px;">Core SW<br>L3</div>
+                
+                <!-- Router to Firewall to Core Connections -->
+                <div class="connection-line ethernet-connection" style="top: 80px; left: 90px; width: 30px;"></div>
+                <div class="connection-line trunk-connection" style="top: 100px; left: 150px; width: 2px; height: 40px;"></div>
+                <div class="connection-line trunk-connection" style="top: 140px; left: 120px; width: 30px;"></div>
+                
+                <!-- Floor 1 Access Layer -->
+                <div class="vlan-group" style="top: 220px; left: 10px; width: 650px; height: 280px; border-color: #e74c3c;">
+                    <div class="vlan-label" style="border-color: #e74c3c; color: #e74c3c;">FLOOR 1 - ACCESS LAYER</div>
+                    
+                    <div class="device access-switch" style="top: 30px; left: 50px;">Reception<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 200px;">Customer<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 50px;">Dev SW1</div>
+                    <div class="device access-switch" style="top: 80px; left: 200px;">Dev SW2</div>
+                    
+                    <div class="device wifi-ap" style="top: 130px; left: 50px;">AP1</div>
+                    <div class="device wifi-ap" style="top: 130px; left: 200px;">AP2</div>
+                    
+                    <!-- IP Cameras Floor 1 -->
+                    <div class="device camera" style="top: 180px; left: 400px;">CAM1</div>
+                    <div class="device camera" style="top: 200px; left: 450px;">CAM2</div>
+                    <div class="device camera" style="top: 220px; left: 400px;">CAM3</div>
+                    <div class="device camera" style="top: 240px; left: 450px;">CAM4</div>
+                    <div class="device camera" style="top: 180px; left: 500px;">CAM5</div>
+                    
+                    <!-- Camera Switch -->
+                    <div class="device access-switch" style="top: 200px; left: 350px;">Cam SW1</div>
+                    
+                    <!-- Core to Access Connections -->
+                    <div class="connection-line trunk-connection" style="top: -80px; left: 100px; width: 2px; height: 110px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 80px; width: 150px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 80px; left: 80px; width: 150px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 250px; width: 130px; height: 170px;"></div>
+                </div>
+                
+                <!-- Floor 2 Access Layer -->
+                <div class="vlan-group" style="top: 520px; left: 10px; width: 650px; height: 280px; border-color: #9b59b6;">
+                    <div class="vlan-label" style="border-color: #9b59b6; color: #9b59b6;">FLOOR 2 - ACCESS LAYER</div>
+                    
+                    <div class="device access-switch" style="top: 30px; left: 50px;">Admin<br>SW</div>
+                    <div class="device access-switch" style="top: 30px; left: 150px;">HR<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 50px;">Accounting<br>SW</div>
+                    <div class="device access-switch" style="top: 80px; left: 150px;">IT<br>SW</div>
+                    
+                    <div class="device wifi-ap" style="top: 130px; left: 50px;">AP3</div>
+                    <div class="device wifi-ap" style="top: 130px; left: 150px;">AP4</div>
+                    
+                    <!-- IP Cameras Floor 2 -->
+                    <div class="device camera" style="top: 180px; left: 400px;">CAM6</div>
+                    <div class="device camera" style="top: 200px; left: 450px;">CAM7</div>
+                    <div class="device camera" style="top: 220px; left: 400px;">CAM8</div>
+                    <div class="device camera" style="top: 240px; left: 450px;">CAM9</div>
+                    <div class="device camera" style="top: 180px; left: 500px;">CAM10</div>
+                    <div class="device camera" style="top: 200px; left: 550px;">CAM11</div>
+                    
+                    <!-- Camera Switch -->
+                    <div class="device access-switch" style="top: 200px; left: 350px;">Cam SW2</div>
+                    
+                    <!-- Core to Access Connections -->
+                    <div class="connection-line trunk-connection" style="top: -380px; left: 100px; width: 2px; height: 410px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 80px; width: 100px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 80px; left: 80px; width: 100px; height: 2px;"></div>
+                    <div class="connection-line access-connection" style="top: 30px; left: 250px; width: 130px; height: 170px;"></div>
+                </div>
+                
+                <!-- Server Room -->
+                <div class="vlan-group" style="top: 820px; left: 10px; width: 650px; height: 280px; border-color: #34495e;">
+                    <div class="vlan-label" style="border-color: #34495e; color: #34495e;">SERVER ROOM - 200.100.50.0/24</div>
+                    
+                    <div class="device server" style="top: 40px; left: 100px;">Secondary<br>DC</div>
+                    <div class="device server" style="top: 40px; left: 200px;">File<br>Server</div>
+                    <div class="device server" style="top: 40px; left: 300px;">App<br>Server</div>
+                    <div class="device server" style="top: 120px; left: 150px;">NVR<br>Server</div>
+                    <div class="device server" style="top: 120px; left: 250px;">Backup<br>Server</div>
+                    
+                    <!-- Server Switch -->
+                    <div class="device access-switch" style="top: 200px; left: 200px;">Server<br>SW</div>
+                    
+                    <!-- Server Connections -->
+                    <div class="connection-line access-connection" style="top: 100px; left: 125px; width: 2px; height: 100px;"></div>
+                    <div class="connection-line access-connection" style="top: 100px; left: 225px; width: 2px; height: 100px;"></div>
+                    <div class="connection-line access-connection" style="top: 100px; left: 325px; width: 2px; height: 100px;"></div>
+                    <div class="connection-line access-connection" style="top: 180px; left: 175px; width: 2px; height: 20px;"></div>
+                    <div class="connection-line access-connection" style="top: 180px; left: 275px; width: 2px; height: 20px;"></div>
+                    
+                    <!-- Server Switch to Core -->
+                    <div class="connection-line trunk-connection" style="top: -680px; left: 225px; width: 2px; height: 680px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Tables -->
+        <div class="connection-table">
+            <h3>Kandy Head Office - Detailed Connection Matrix</h3>
+            <div class="table-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source Device</th>
+                            <th>Source Port</th>
+                            <th>Destination Device</th>
+                            <th>Destination Port</th>
+                            <th>Cable Type</th>
+                            <th>VLAN/Purpose</th>
+                            <th>Speed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ISP Router</td>
+                            <td>GigabitEthernet 0/0</td>
+                            <td>Firewall</td>
+                            <td>GigabitEthernet 0/1</td>
+                            <td><span class="cable-type cat6">CAT6</span></td>
+                            <td>WAN Connection</td>
+                            <td>1 Gbps</td>
+                        </tr>
+                        <tr>
+                            <td>Firewall</td>
+                            <td>GigabitEthernet 0/2</td>
+                            <td>Core Switch</td>
+                            <td>GigabitEthernet 0/1</td>
+                            <td><span class="cable-type cat6a">CAT6A</span></td>
+                            <td>LAN Trunk</td>
+                            <td>1 Gbps</td>
+                        </tr>
+                        <tr>
+                            <td>Core Switch</td>
+                            <td>GigabitEthernet 0/2
